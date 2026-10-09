@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Relevamiento inicial de Yamila Potel: cuestionario por pasos para conocer tu estructura contable, financiera y de costos antes de nuestra primera reunión.">
+  <title>Diagnóstico Inicial | Yamila Potel - Asesoría Contable, Impositiva, Económica y Financiera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ============================ HEADER OFICIAL ============================ -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+
+      <!-- Logo de marca -->
+      <a class="brand" href="index.html" aria-label="Yamila Potel - Inicio">
+        <span class="brand-monogram" aria-hidden="true">YP</span>
+        <span class="brand-text">
+          <span class="brand-name">Yamila Potel</span>
+          <span class="brand-tagline">Asesoría Contable · Impositiva · Económica · Financiera</span>
+        </span>
+      </a>
+
+      <!-- Menú de navegación (drawer a pantalla completa en móvil) -->
+      <nav class="site-nav" id="site-nav" aria-label="Navegación principal">
+
+        <button class="nav-close" id="nav-close" type="button" aria-label="Cerrar menú de navegación">
+          <span class="nav-close-icon" aria-hidden="true"></span>
+        </button>
+
+        <ul class="site-nav-list">
+          <li><a class="site-nav-link" href="index.html">Inicio</a></li>
+          <li><a class="site-nav-link" href="servicios.html">Servicios</a></li>
+          <li><a class="site-nav-link is-active" href="diagnostico.html" aria-current="page">Diagnóstico Inicial</a></li>
+          <li><a class="site-nav-link" href="sobre-mi.html">Sobre Mí</a></li>
+          <li><a class="site-nav-link" href="contacto.html">Contacto</a></li>
+        </ul>
+
+        <a class="btn btn-primary nav-mobile-cta" href="diagnostico.html">Solicitar Relevamiento &rarr;</a>
+      </nav>
+
+      <!-- Botón CTA -->
+      <a class="btn btn-primary header-cta" href="diagnostico.html">Solicitar Relevamiento &rarr;</a>
+
+      <!-- Menú hamburguesa (mobile) -->
+      <button
+        class="nav-toggle"
+        id="nav-toggle"
+        type="button"
+        aria-label="Abrir menú de navegación"
+        aria-controls="site-nav"
+        aria-expanded="false">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================ HERO DEL DIAGNÓSTICO ============================ -->
+    <section class="diagnostico-hero" aria-labelledby="diagnostico-title">
+      <div class="diagnostico-hero-content">
+        <span class="diag-hero-kicker">Diagnóstico inicial</span>
+
+        <h1 class="diag-hero-title" id="diagnostico-title">Conocemos tu negocio para brindarte una propuesta a medida.</h1>
+
+        <p class="diag-hero-text">Completá el siguiente cuestionario para que podamos evaluar la organización de tu emprendimiento, tus costos, flujo de fondos y rentabilidad.</p>
+
+        <ul class="hero-badges">
+          <li class="hero-badge-item"><span class="badge-check" aria-hidden="true">&#10003;</span> Confidencial</li>
+          <li class="hero-badge-item"><span class="badge-check" aria-hidden="true">&#10003;</span> Te lleva pocos minutos</li>
+          <li class="hero-badge-item"><span class="badge-check" aria-hidden="true">&#10003;</span> La base para una propuesta personalizada</li>
+        </ul>
+      </div>
+
+      <div class="diagnostico-hero-visual">
+        <div class="diag-hero-img">
+          <img
+            class="img-placeholder"
+            src="assets/images/diagnostico-hero.jpg"
+            alt="Yamila Potel revisando documentación financiera en su escritorio de trabajo">
+        </div>
+        <span class="diag-hero-note" aria-hidden="true">Tu información hoy, mejores decisiones mañana.</span>
+      </div>
+    </section>
+
+    <!-- ============================ STEPPER / PROGRESO ============================ -->
+    <div class="stepper-container">
+      <div class="stepper-bar" role="group" aria-label="Progreso del relevamiento">
+        <span class="stepper-line" aria-hidden="true"></span>
+
+        <div class="step active" aria-current="step">
+          <span class="step-number">1</span>
+          <span class="step-label">Datos generales</span>
+        </div>
+
+        <div class="step pending">
+          <span class="step-number">2</span>
+          <span class="step-label">Organización administrativa</span>
+        </div>
+
+        <div class="step pending">
+          <span class="step-number">3</span>
+          <span class="step-label">Ventas y facturación</span>
+        </div>
+
+        <div class="step pending">
+          <span class="step-number">4</span>
+          <span class="step-label">Bancos y dinero</span>
+        </div>
+
+        <div class="step pending">
+          <span class="step-number">5</span>
+          <span class="step-label">Costos y rentabilidad</span>
+        </div>
+
+        <div class="step pending">
+          <span class="step-number">6</span>
+          <span class="step-label">Resumen y envío</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== LAYOUT 2 COLUMNAS: FORMULARIO + SIDEBAR ==================== -->
+    <div class="diagnostico-layout">
+
+      <!-- Columna izquierda: wizard del formulario -->
+      <form class="wizard-card" id="form-wizard" novalidate>
+
+        <span class="wizard-step-kicker" id="wizard-step-kicker">Paso 1 de 6</span>
+
+        <!-- PASO 1 -->
+        <div class="step-pane is-active" data-step="1">
+          <h2 class="wizard-title">Información de tu Emprendimiento</h2>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="nombre">Nombre y Apellido</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Ej: Yamila Potel" autocomplete="name" required>
+            </div>
+
+            <div class="form-field">
+              <label for="negocio">Nombre del Negocio / Marca</label>
+              <input type="text" id="negocio" name="negocio" placeholder="Ej: Estudio Potel" autocomplete="organization" required>
+            </div>
+
+            <div class="form-field">
+              <label for="rubro">Rubro / Actividad</label>
+              <select id="rubro" name="rubro" required>
+                <option value="" selected disabled>Seleccioná tu rubro</option>
+                <option value="comercio">Comercio / Tienda</option>
+                <option value="servicios">Prestación de servicios</option>
+                <option value="gastronomia">Gastronomía</option>
+                <option value="industria">Industria / Producción</option>
+                <option value="importacion">Importación / Courier</option>
+                <option value="profesionales">Profesionales liberales</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="antiguedad">Antigüedad del negocio</label>
+              <select id="antiguedad" name="antiguedad" required>
+                <option value="" selected disabled>Seleccioná antigüedad</option>
+                <option value="menos_1">Menos de 1 año</option>
+                <option value="1_3">1 a 3 años</option>
+                <option value="3_5">3 a 5 años</option>
+                <option value="mas_5">Más de 5 años</option>
+              </select>
+            </div>
+          </div>
+
+          <fieldset class="form-fieldset">
+            <legend>Tipo de gestión</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="tipo_gestion" value="monotributista" required>
+                <span class="option-title">Monotributista</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="tipo_gestion" value="responsable_inscripto">
+                <span class="option-title">Responsable Inscripto</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="tipo_gestion" value="sin_registrar">
+                <span class="option-title">Aún no registrado / En desarrollo</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="step-pane" data-step="2">
+          <h2 class="wizard-title">Organización administrativa</h2>
+          <p class="wizard-hint">Así entendemos cómo registrás la información y con qué frecuencia tomás decisiones.</p>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Registrás los ingresos y egresos de tu negocio?</legend>
+
+            <div class="option-group option-group--2">
+              <label class="option-card">
+                <input type="radio" name="registro_movimientos" value="todos_los_dias" required>
+                <span class="option-title">Sí, todos los días</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="registro_movimientos" value="sin_frecuencia">
+                <span class="option-title">Sí, pero sin frecuencia fija</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="registro_movimientos" value="no_quiero_empezar">
+                <span class="option-title">No, pero quiero empezar</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="registro_movimientos" value="no">
+                <span class="option-title">No</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Con qué frecuencia revisás tus números?</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="frecuencia_revision" value="diaria" required>
+                <span class="option-title">A diario</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="frecuencia_revision" value="semanal">
+                <span class="option-title">Semanal</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="frecuencia_revision" value="mensual">
+                <span class="option-title">Mensual</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="frecuencia_revision" value="casi_nunca">
+                <span class="option-title">Casi nunca</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="form-grid">
+            <div class="form-field is-full">
+              <label for="sistema_registro">¿Con qué herramienta registrás? (opcional)</label>
+              <input type="text" id="sistema_registro" name="sistema_registro" placeholder="Ej: Excel, app de gestión, cuaderno...">
+            </div>
+          </div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="step-pane" data-step="3">
+          <h2 class="wizard-title">Ventas, facturación y cobranzas</h2>
+          <p class="wizard-hint">Nos ayuda a dimensionar tu volumen de operaciones y el flujo de cobros.</p>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Con qué medios cobrás? (podés marcar varios)</legend>
+
+            <div class="option-group">
+              <label class="option-card option-card--check">
+                <input type="checkbox" name="medios_cobro" value="efectivo" required>
+                <span class="option-title">Efectivo</span>
+              </label>
+
+              <label class="option-card option-card--check">
+                <input type="checkbox" name="medios_cobro" value="transferencia">
+                <span class="option-title">Transferencia / DEBIN</span>
+              </label>
+
+              <label class="option-card option-card--check">
+                <input type="checkbox" name="medios_cobro" value="debito_credito">
+                <span class="option-title">Tarjeta de débito / crédito</span>
+              </label>
+
+              <label class="option-card option-card--check">
+                <input type="checkbox" name="medios_cobro" value="billeteras">
+                <span class="option-title">Mercado Pago / billeteras</span>
+              </label>
+
+              <label class="option-card option-card--check">
+                <input type="checkbox" name="medios_cobro" value="cheque">
+                <span class="option-title">Cheque</span>
+              </label>
+
+              <label class="option-card option-card--check">
+                <input type="checkbox" name="medios_cobro" value="otro">
+                <span class="option-title">Otro</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="pct_facturacion">¿Qué porcentaje de tus ventas facturás?</label>
+              <select id="pct_facturacion" name="pct_facturacion" required>
+                <option value="" selected disabled>Seleccioná un rango</option>
+                <option value="ninguna">No facturo / casi nada</option>
+                <option value="hasta_20">Hasta el 20%</option>
+                <option value="20_50">Entre 20% y 50%</option>
+                <option value="50_80">Entre 50% y 80%</option>
+                <option value="mas_80">Más del 80%</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="nivel_facturacion">Nivel de facturación mensual (aprox.)</label>
+              <select id="nivel_facturacion" name="nivel_facturacion" required>
+                <option value="" selected disabled>Seleccioná un rango</option>
+                <option value="sin_ventas">Todavía no tengo ventas fijas</option>
+                <option value="hasta_2m">Hasta $2.000.000</option>
+                <option value="2m_8m">Entre $2.000.000 y $8.000.000</option>
+                <option value="mas_8m">Más de $8.000.000</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASO 4 -->
+        <div class="step-pane" data-step="4">
+          <h2 class="wizard-title">Bancos y manejo del dinero</h2>
+          <p class="wizard-hint">Ver cómo circula el dinero ayuda a ordenar fondos de reserva y retiros.</p>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Tenés cuenta bancaria para el negocio?</legend>
+
+            <div class="option-group option-group--2">
+              <label class="option-card">
+                <input type="radio" name="cuenta_bancaria" value="caja_ahorro" required>
+                <span class="option-title">Sí, caja de ahorro propia</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="cuenta_bancaria" value="cuenta_corriente">
+                <span class="option-title">Sí, cuenta corriente</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="cuenta_bancaria" value="cuenta_personal">
+                <span class="option-title">Uso mi cuenta personal</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="cuenta_bancaria" value="sin_cuenta">
+                <span class="option-title">No tengo cuenta</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>¿La usás exclusivamente para el negocio?</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="cuenta_exclusiva" value="exclusiva" required>
+                <span class="option-title">Sí, solo para el negocio</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="cuenta_exclusiva" value="mezclo">
+                <span class="option-title">A veces mezclo gastos personales</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="cuenta_exclusiva" value="no_aplica">
+                <span class="option-title">No aplica</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Cómo manejás los retiros personales?</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="retiros_personales" value="registrados_plan" required>
+                <span class="option-title">Los registro como adelantos</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="retiros_personales" value="registrados_sin_plan">
+                <span class="option-title">Los registro, pero sin plan</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="retiros_personales" value="sin_registrar">
+                <span class="option-title">No los registro</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- PASO 5 -->
+        <div class="step-pane" data-step="5">
+          <h2 class="wizard-title">Costos y situación financiera</h2>
+          <p class="wizard-hint">Esto marca el punto de partida para trabajar costos y rentabilidad.</p>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Conocés tu punto de equilibrio?</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="punto_equilibrio" value="calculado" required>
+                <span class="option-title">Sí, lo tengo calculado</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="punto_equilibrio" value="aproximado">
+                <span class="option-title">Más o menos</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="punto_equilibrio" value="desconocido">
+                <span class="option-title">No lo conozco</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Tenés fondo de reserva o colchón financiero?</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="fondo_reserva" value="solido" required>
+                <span class="option-title">Sí, tengo colchón</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="fondo_reserva" value="chico">
+                <span class="option-title">Sí, pero chico</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="fondo_reserva" value="sin_fondo">
+                <span class="option-title">No tengo</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Sabés cuánto te cuesta producir o prestar tu servicio?</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="control_costos" value="claro" required>
+                <span class="option-title">Sí, lo tengo claro</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="control_costos" value="aproximado">
+                <span class="option-title">Más o menos</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="control_costos" value="desconocido">
+                <span class="option-title">No sé cuánto me cuesta</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- PASO 6 -->
+        <div class="step-pane" data-step="6">
+          <h2 class="wizard-title">Principal desafío y cierre</h2>
+          <p class="wizard-hint">Con esto cerramos el diagnóstico y armamos el orden de trabajo.</p>
+
+          <fieldset class="form-fieldset">
+            <legend>¿Cuál es tu principal desafío hoy?</legend>
+
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="desafio_principal" value="ordenar_numeros" required>
+                <span class="option-title">Ordenar mis números</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="desafio_principal" value="bajar_costos">
+                <span class="option-title">Bajar costos y ser más rentable</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="desafio_principal" value="facturar_cobrar">
+                <span class="option-title">Facturar y cobrar mejor</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="desafio_principal" value="crecer_control">
+                <span class="option-title">Crecer sin perder el control</span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="desafio_principal" value="no_se_por_donde">
+                <span class="option-title">No sé por dónde empezar</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="form-grid">
+            <div class="form-field is-full">
+              <label for="comentarios">Comentarios (opcional)</label>
+              <textarea id="comentarios" name="comentarios" rows="4" placeholder="Contanos qué te gustaría ordenar primero o dejá cualquier dato importante."></textarea>
+            </div>
+          </div>
+
+          <div class="summary-box" id="resumen-box" hidden>
+            <h3 class="summary-title">Resumen de tus respuestas</h3>
+            <dl class="summary-list" id="resumen-lista"></dl>
+          </div>
+
+          <p class="wizard-hint">Al enviar se abrirá WhatsApp con el resumen de tus respuestas, listo para enviármelo con un toque.</p>
+        </div>
+
+        <!-- Acciones del wizard -->
+        <div class="wizard-actions">
+          <button type="button" class="btn btn-secondary" id="btn-prev" disabled>Anterior</button>
+          <button type="button" class="btn btn-primary" id="btn-next">Continuar</button>
+        </div>
+
+      </form>
+
+      <!-- Columna derecha: sidebar informativo -->
+      <aside class="diagnostico-sidebar" aria-label="Información del relevamiento">
+
+        <div class="sidebar-card">
+          <h3 class="sidebar-card-title">
+            <svg class="info-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            ¿Por qué preguntamos esto?
+          </h3>
+          <p>Nos ayuda a dimensionar el volumen de transacciones y el nivel de complejidad operativa de tu emprendimiento para preparar un plan de acompañamiento realista.</p>
+        </div>
+
+        <div class="sidebar-card highlight">
+          <h3 class="sidebar-card-title">Privacidad garantizada</h3>
+          <p>Tus datos financieros y comerciales son estrictamente confidenciales y solo serán utilizados para la evaluación previa.</p>
+        </div>
+
+        <figure class="sidebar-photo-card">
+          <img
+            src="assets/images/escritorio-diagnostico.jpg"
+            alt="Escritorio de trabajo con agenda, cuaderno de notas y pluma">
+          <figcaption class="sidebar-photo-caption">Un negocio ordenado también te da tranquilidad.</figcaption>
+        </figure>
+
+      </aside>
+
+    </div>
+
+    <!-- ============================ BANNER DE CIERRE ============================ -->
+    <section class="section section-cierre section-padding" aria-labelledby="cierre-title">
+      <div class="section-inner">
+        <div class="banner-cierre">
+          <div class="banner-cierre-img">
+            <img
+              class="img-placeholder"
+              src="assets/images/banner-cierre.jpg"
+              alt="Reunión de trabajo con planillas, gráficos y resultados del negocio">
+            <span class="banner-cierre-ribbon">Estrategia &middot; Orden &middot; Resultados</span>
+          </div>
+
+          <div class="banner-cierre-body">
+            <span class="banner-cierre-kicker">Un acompañamiento real</span>
+            <h2 class="banner-cierre-title" id="cierre-title">Más que números, una visión completa de tu negocio.</h2>
+            <p class="banner-cierre-text">El relevamiento es el punto de partida de un trabajo conjunto: traducimos tus números en decisiones claras para ordenar, crecer y proyectar con seguridad.</p>
+            <a class="btn btn-primary" href="contacto.html">Solicitar asesoría &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================ FOOTER OFICIAL ============================ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+
+      <div class="footer-grid">
+
+        <!-- Columna 1: Marca -->
+        <div class="footer-col footer-brand">
+          <a class="brand" href="index.html" aria-label="Yamila Potel - Inicio">
+            <span class="brand-monogram" aria-hidden="true">YP</span>
+            <span class="brand-text">
+              <span class="brand-name">Yamila Potel</span>
+            </span>
+          </a>
+        </div>
+
+        <!-- Columna 2: Navegación rápida -->
+        <nav class="footer-col" aria-label="Navegación rápida">
+          <h3 class="footer-heading">Navegación</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="diagnostico.html">Diagnóstico Inicial</a></li>
+            <li><a href="sobre-mi.html">Sobre Mí</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </nav>
+
+        <!-- Columna 3: Redes sociales -->
+        <div class="footer-col footer-social">
+          <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.741 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.741 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.259 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 0 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/>
+            </svg>
+          </a>
+
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+            </svg>
+          </a>
+
+          <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+            </svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Barra inferior de copyright -->
+    <div class="footer-bottom">
+      <p>&copy; 2026 Yamila Potel. Todos los derechos reservados.</p>
+      <a class="footer-privacidad" href="politica-de-privacidad.html">Política de privacidad</a>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/diagnostico.js" defer></script>
+</body>
+</html>
