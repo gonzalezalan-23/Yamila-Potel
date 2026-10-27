@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contactá a Yamila Potel: completá el formulario de consulta o escribí por WhatsApp y email para asesoría contable, impositiva, económica y financiera.">
+  <title>Contacto | Yamila Potel - Asesoría Contable, Impositiva, Económica y Financiera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ============================ HEADER OFICIAL ============================ -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+
+      <!-- Logo de marca -->
+      <a class="brand" href="index.html" aria-label="Yamila Potel - Inicio">
+        <span class="brand-monogram" aria-hidden="true">YP</span>
+        <span class="brand-text">
+          <span class="brand-name">Yamila Potel</span>
+          <span class="brand-tagline">Asesoría Contable · Impositiva · Económica · Financiera</span>
+        </span>
+      </a>
+
+      <!-- Menú de navegación (drawer a pantalla completa en móvil) -->
+      <nav class="site-nav" id="site-nav" aria-label="Navegación principal">
+
+        <button class="nav-close" id="nav-close" type="button" aria-label="Cerrar menú de navegación">
+          <span class="nav-close-icon" aria-hidden="true"></span>
+        </button>
+
+        <ul class="site-nav-list">
+          <li><a class="site-nav-link" href="index.html">Inicio</a></li>
+          <li><a class="site-nav-link" href="servicios.html">Servicios</a></li>
+          <li><a class="site-nav-link" href="diagnostico.html">Diagnóstico Inicial</a></li>
+          <li><a class="site-nav-link" href="sobre-mi.html">Sobre Mí</a></li>
+          <li><a class="site-nav-link is-active" href="contacto.html" aria-current="page">Contacto</a></li>
+        </ul>
+
+        <a class="btn btn-primary nav-mobile-cta" href="diagnostico.html">Solicitar Relevamiento &rarr;</a>
+      </nav>
+
+      <!-- Botón CTA -->
+      <a class="btn btn-primary header-cta" href="diagnostico.html">Solicitar Relevamiento &rarr;</a>
+
+      <!-- Menú hamburguesa (mobile) -->
+      <button
+        class="nav-toggle"
+        id="nav-toggle"
+        type="button"
+        aria-label="Abrir menú de navegación"
+        aria-controls="site-nav"
+        aria-expanded="false">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ======================= HERO DE CONTACTO ======================= -->
+    <section class="contacto-hero" aria-labelledby="contacto-title">
+      <span class="contacto-kicker">Contacto</span>
+
+      <h1 class="contacto-title" id="contacto-title">Estoy para ayudarte.</h1>
+
+      <p class="contacto-lead">Si tenés dudas, querés más información o preferís que realicemos un diagnóstico inicial, completá el formulario y me pondré en contacto a la brevedad.</p>
+    </section>
+
+    <!-- ======================= FORMULARIO + CANALES DIRECTOS ======================= -->
+    <section class="contacto-section" aria-label="Formulario de contacto y canales directos">
+      <div class="contacto-container">
+
+        <!-- Columna izquierda: formulario -->
+        <form class="contacto-form-card" id="contact-form" action="" method="post" aria-label="Formulario de contacto">
+
+          <div class="form-field">
+            <label for="nombre">Nombre y apellido</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Yamila Potel" autocomplete="name" required>
+          </div>
+
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="nombre@correo.com" autocomplete="email" required>
+          </div>
+
+          <div class="form-field">
+            <label for="telefono">Teléfono / WhatsApp <span class="form-optional">(opcional)</span></label>
+            <input type="tel" id="telefono" name="telefono" placeholder="Ej: 11 3905-3672" autocomplete="tel">
+          </div>
+
+          <div class="form-field">
+            <label for="ayuda">¿En qué puedo ayudarte?</label>
+            <select id="ayuda" name="ayuda" required>
+              <option value="" disabled selected>Seleccioná una opción</option>
+              <option value="asesoria-impositiva-contable">Asesoría impositiva y contable</option>
+              <option value="costos-precios">Costos y precios</option>
+              <option value="control-financiero">Control financiero</option>
+              <option value="diagnostico-inicial">Diagnóstico inicial</option>
+              <option value="otras-consultas">Otras consultas</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" rows="5" placeholder="Contame brevemente tu consulta o tu situación..." required></textarea>
+          </div>
+
+          <button class="btn btn-primary contacto-submit" type="submit">Enviar consulta &rarr;</button>
+
+        </form>
+
+        <!-- Columna derecha: canales directos -->
+        <aside class="contacto-sidebar" aria-label="Canales de contacto directo">
+
+          <div class="contacto-card is-highlight">
+            <span class="icon-circle" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+              </svg>
+            </span>
+            <div class="contacto-card-body">
+              <h2 class="contacto-card-title">WhatsApp</h2>
+              <p class="contacto-card-text">Escribime directo para coordinar una reunión o resolver una consulta.</p>
+              <a class="contacto-card-link" href="https://wa.me/5491139053672" target="_blank" rel="noopener noreferrer">+54 9 11 3905-3672</a>
+            </div>
+          </div>
+
+          <div class="contacto-card">
+            <span class="icon-circle" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="m22 7-10 6L2 7"></path>
+              </svg>
+            </span>
+            <div class="contacto-card-body">
+              <h2 class="contacto-card-title">Email</h2>
+              <p class="contacto-card-text">Para consultas y envío de documentación.</p>
+              <a class="contacto-card-link" href="mailto:contacto@yamilapotel.com.ar">contacto@yamilapotel.com.ar</a>
+            </div>
+          </div>
+
+          <div class="contacto-card">
+            <span class="icon-circle" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </span>
+            <div class="contacto-card-body">
+              <h2 class="contacto-card-title">Modalidad y horarios</h2>
+              <p class="contacto-card-text">Atención 100% online en todo el país.</p>
+              <p class="contacto-card-text">Lunes a viernes de 9 a 18 hs.</p>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================ FOOTER OFICIAL ============================ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+
+      <div class="footer-grid">
+
+        <!-- Columna 1: Marca -->
+        <div class="footer-col footer-brand">
+          <a class="brand" href="index.html" aria-label="Yamila Potel - Inicio">
+            <span class="brand-monogram" aria-hidden="true">YP</span>
+            <span class="brand-text">
+              <span class="brand-name">Yamila Potel</span>
+            </span>
+          </a>
+        </div>
+
+        <!-- Columna 2: Navegación rápida -->
+        <nav class="footer-col" aria-label="Navegación rápida">
+          <h3 class="footer-heading">Navegación</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="diagnostico.html">Diagnóstico Inicial</a></li>
+            <li><a href="sobre-mi.html">Sobre Mí</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </nav>
+
+        <!-- Columna 3: Redes sociales -->
+        <div class="footer-col footer-social">
+          <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.741 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.741 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.259 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 0 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/>
+            </svg>
+          </a>
+
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+            </svg>
+          </a>
+
+          <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+            </svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Barra inferior de copyright -->
+    <div class="footer-bottom">
+      <p>&copy; 2026 Yamila Potel. Todos los derechos reservados.</p>
+      <a class="footer-privacidad" href="politica-de-privacidad.html">Política de privacidad</a>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
