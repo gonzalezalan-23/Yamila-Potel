@@ -99,13 +99,17 @@
             <label for="ayuda">¿En qué puedo ayudarte?</label>
             <select id="ayuda" name="ayuda" required>
               <option value="" disabled selected>Seleccioná una opción</option>
-              <option value="asesoria-impositiva-contable">Asesoría impositiva y contable</option>
-              <option value="costos-precios">Costos y precios</option>
-              <option value="control-financiero">Control financiero</option>
+              <option value="impositiva">Asesoría impositiva y contable</option>
+              <option value="costos">Análisis de costos y rentabilidad</option>
+              <option value="flujo">Gestión de flujo de caja y bancos</option>
+              <option value="importaciones">Costeo de importaciones y courier</option>
               <option value="diagnostico-inicial">Diagnóstico inicial</option>
               <option value="otras-consultas">Otras consultas</option>
             </select>
           </div>
+
+          <!-- Campos extra que se generan según el servicio seleccionado (js/contacto.js) -->
+          <div id="servicio-campos" class="servicio-campos" aria-live="polite" hidden></div>
 
           <div class="form-field">
             <label for="mensaje">Mensaje</label>
@@ -228,5 +232,6 @@
 
   <script src="js/app.js"></script>
   <script src="js/main.js" defer></script>
+  <script src="js/contacto.js" defer></script>
 </body>
 </html>

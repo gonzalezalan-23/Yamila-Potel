@@ -13,6 +13,27 @@ var WHATSAPP_NUMBER = '1139053672';
 // Clave de persistencia del borrador en localStorage
 var STORAGE_KEY = 'yp_diagnostico_draft';
 
+// Estado del cierre: fecha de envío y último mensaje armado
+// (para mostrar la tarjeta y poder reenviar desde WhatsApp)
+var STORAGE_ENVIADO_KEY = 'yp_diagnostico_enviado';
+
+/* ------------------------------------------------------------
+   MODO DE ENVÍO A WHATSAPP  (ver PLAN-BACKEND, sección 4.1)
+
+     false (HOY, sin backend): manda el detalle COMPLETO de las
+       respuestas con el formato prolijo agrupado por secciones.
+
+     true (cuando G.A.S escriba en la planilla): manda solo la
+       notificación corta "se actualizó la planilla..." con el
+       link a la hoja. NO activar hasta conectar la Fase 2/3,
+       porque hoy no se guarda nada y sería mentira.
+   ------------------------------------------------------------ */
+var MODO_NOTIFICACION = false;
+
+// Link a la hoja de cálculo (solo se usa con MODO_NOTIFICACION
+// = true). Dejar vacío hasta tener la hoja compartida.
+var URL_PLANILLA = '';
+
 /* =========================================================
    Estructura de los 6 pasos del cuestionario
    ========================================================= */
@@ -78,6 +99,56 @@ var FIELD_LABELS = {
   desafio_principal: 'Desafío principal',
   comentarios: 'Comentarios'
 };
+
+// Etiquetas CORTAS para el mensaje de WhatsApp (formato 4.1).
+// Un valor vacío ("") muestra solo el dato sin etiqueta.
+var SHORT_LABELS = {
+  nombre: 'Nombre',
+  negocio: 'Emprendimiento',
+  rubro: 'Rubro',
+  antiguedad: '',
+  tipo_gestion: 'Gestión',
+  registro_movimientos: 'Registro',
+  frecuencia_revision: 'Revisión',
+  sistema_registro: 'Sistema',
+  medios_cobro: 'Cobros',
+  pct_facturacion: 'Facturación',
+  nivel_facturacion: 'Nivel',
+  cuenta_bancaria: 'Cuenta',
+  cuenta_exclusiva: 'Uso',
+  retiros_personales: 'Retiros',
+  punto_equilibrio: 'Punto de equilibrio',
+  fondo_reserva: 'Fondo de reserva',
+  control_costos: 'Control de costos',
+  desafio_principal: 'Desafío principal',
+  comentarios: 'Comentarios'
+};
+
+// Agrupación del mensaje por secciones. Cada "linea" junta varios
+// campos con " · " y se omite completa si todos están vacíos.
+var SECCIONES_MENSAJE = [
+  {
+    titulo: 'Datos',
+    lineas: [
+      ['rubro', 'antiguedad'],
+      ['tipo_gestion']
+    ]
+  },
+  {
+    titulo: 'Organización',
+    lineas: [
+      ['registro_movimientos', 'frecuencia_revision', 'sistema_registro'],
+      ['medios_cobro', 'pct_facturacion', 'nivel_facturacion']
+    ]
+  },
+  {
+    titulo: 'Dinero',
+    lineas: [
+      ['cuenta_bancaria', 'cuenta_exclusiva', 'retiros_personales'],
+      ['punto_equilibrio', 'fondo_reserva', 'control_costos']
+    ]
+  }
+];
 
 // Estado global del wizard
 var currentStep = 1;
@@ -516,23 +587,147 @@ document.addEventListener('DOMContentLoaded', function () {
      Envío final por WhatsApp
      ------------------------------------------------------- */
 
-  function buildMessage() {
-    var data = collectFormData();
-    var lines = ['Hola Yamila, completé el Diagnóstico Inicial en tu web.', ''];
+  function fechaCorta() {
+    var ahora = new Date();
 
-    STEPS.forEach(function (step) {
-      step.fields.forEach(function (name) {
-        var value = displayValue(name, data);
+    function p(n) {
+      return n < 10 ? '0' + n : String(n);
+    }
 
-        if (!value) {
-          return;
+    return p(ahora.getDate()) + '/' + p(ahora.getMonth() + 1) + '/' +
+      ahora.getFullYear() + ' ' + p(ahora.getHours()) + ':' + p(ahora.getMinutes());
+  }
+
+  function lineaCampo(name, data) {
+    var value = displayValue(name, data);
+
+    if (!value) {
+      return '';
+    }
+
+    var label = SHORT_LABELS[name] !== undefined
+      ? SHORT_LABELS[name]
+      : (FIELD_LABELS[name] || name);
+
+    return label ? label + ': ' + value : value;
+  }
+
+  // Detalle completo, agrupado por secciones (interim, MODO_NOTIFICACION = false)
+  function buildMensajeDetalle(data) {
+    var nombre = displayValue('nombre', data);
+    var negocio = displayValue('negocio', data);
+
+    var titulo = 'Diagnóstico Inicial';
+
+    if (nombre && negocio) {
+      titulo += ' — ' + nombre + ' (' + negocio + ')';
+    } else if (nombre || negocio) {
+      titulo += ' — ' + (nombre || negocio);
+    }
+
+    var lines = ['🟠 *' + titulo + '*'];
+
+    SECCIONES_MENSAJE.forEach(function (seccion) {
+      var cuerpo = [];
+
+      seccion.lineas.forEach(function (campos) {
+        var partes = [];
+
+        campos.forEach(function (name) {
+          var parte = lineaCampo(name, data);
+
+          if (parte) {
+            partes.push(parte);
+          }
+        });
+
+        if (partes.length) {
+          cuerpo.push('- ' + partes.join(' · '));
         }
-
-        lines.push('- ' + (FIELD_LABELS[name] || name) + ': ' + value);
       });
+
+      if (cuerpo.length) {
+        lines.push('', '*' + seccion.titulo + '*');
+
+        cuerpo.forEach(function (linea) {
+          lines.push(linea);
+        });
+      }
     });
 
+    var desafio = displayValue('desafio_principal', data);
+    if (desafio) {
+      lines.push('', '⚠️ *Desafío principal*', '"' + desafio + '"');
+    }
+
+    var comentarios = displayValue('comentarios', data);
+    if (comentarios) {
+      lines.push('', '💬 *Comentarios*', '"' + comentarios + '"');
+    }
+
+    lines.push('', '_' + fechaCorta() + '_');
     return lines.join('\n');
+  }
+
+  // Notificación corta (MODO_NOTIFICACION = true, con G.A.S conectado)
+  function buildNotificacion(data) {
+    var nombre = displayValue('nombre', data);
+    var negocio = displayValue('negocio', data);
+
+    var lines = [
+      '🔔 *Nueva consulta desde tu web*',
+      'La planilla de clientes se actualizó con un nuevo *Diagnóstico Inicial*.',
+      ''
+    ];
+
+    if (nombre || negocio) {
+      var persona = [];
+
+      if (nombre) {
+        persona.push('*' + nombre + '*');
+      }
+
+      if (negocio) {
+        persona.push(negocio);
+      }
+
+      lines.push('👤 ' + persona.join(' — '));
+    }
+
+    var contexto = [];
+    var rubro = lineaCampo('rubro', data);
+    var antiguedad = lineaCampo('antiguedad', data);
+
+    if (rubro) {
+      contexto.push(rubro);
+    }
+
+    if (antiguedad) {
+      contexto.push(antiguedad);
+    }
+
+    if (contexto.length) {
+      lines.push(contexto.join(' · '));
+    }
+
+    if (data.desafio_principal) {
+      lines.push('⚠️ Desafío principal: "' + data.desafio_principal + '"');
+    }
+
+    if (URL_PLANILLA) {
+      lines.push('', '📋 Planilla: ' + URL_PLANILLA);
+    } else {
+      console.warn('[Yamila Potel] Falta cargar URL_PLANILLA en js/diagnostico.js para la notificación.');
+    }
+
+    lines.push('', '_' + fechaCorta() + '_');
+    return lines.join('\n');
+  }
+
+  function buildMessage() {
+    var data = collectFormData();
+
+    return MODO_NOTIFICACION ? buildNotificacion(data) : buildMensajeDetalle(data);
   }
 
   function submitSurvey() {
@@ -545,6 +740,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var message = buildMessage();
+    var url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(message);
 
     if (!WHATSAPP_NUMBER) {
       console.warn(
@@ -553,7 +749,11 @@ document.addEventListener('DOMContentLoaded', function () {
       );
     }
 
-    var url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(message);
+    // Guardamos el estado de "enviado" y el último mensaje para
+    // la tarjeta de cierre (se ve al volver de WhatsApp o si el
+    // enlace no llega a abrirse).
+    var datosParaCierre = collectFormData();
+    guardarEnviado(message, displayValue('nombre', datosParaCierre));
 
     formData = {};
     try {
@@ -562,6 +762,7 @@ document.addEventListener('DOMContentLoaded', function () {
       console.warn('[Yamila Potel] No se pudo limpiar el borrador:', error);
     }
 
+    mostrarCierre();
     window.location.href = url;
   }
 
@@ -591,9 +792,140 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* -------------------------------------------------------
+     Tarjeta de cierre (post-envío) — plan 4.1
+     ------------------------------------------------------- */
+
+  function guardarEnviado(mensaje, nombre) {
+    try {
+      window.localStorage.setItem(STORAGE_ENVIADO_KEY, JSON.stringify({
+        fecha: new Date().toISOString(),
+        nombre: nombre || '',
+        mensaje: mensaje || ''
+      }));
+    } catch (error) {
+      console.warn('[Yamila Potel] No se pudo guardar el estado de envío:', error);
+    }
+  }
+
+  function leerEnviado() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_ENVIADO_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function limpiarEnviado() {
+    try {
+      window.localStorage.removeItem(STORAGE_ENVIADO_KEY);
+    } catch (error) {
+      console.warn('[Yamila Potel] No se pudo limpiar el estado de envío:', error);
+    }
+  }
+
+  function mostrarCierre() {
+    var enviado = leerEnviado();
+
+    if (!enviado) {
+      return false;
+    }
+
+    var stepper = document.querySelector('.stepper-container');
+    var layout = document.querySelector('.diagnostico-layout');
+
+    if (!layout || !layout.parentNode) {
+      return false;
+    }
+
+    if (stepper) {
+      stepper.hidden = true;
+    }
+    layout.hidden = true;
+
+    var vieja = document.getElementById('diagnostico-cierre');
+    if (vieja && vieja.parentNode) {
+      vieja.parentNode.removeChild(vieja);
+    }
+
+    var card = document.createElement('div');
+    card.className = 'cierre-card';
+    card.id = 'diagnostico-cierre';
+
+    var icono = document.createElement('span');
+    icono.className = 'cierre-icono';
+    icono.setAttribute('aria-hidden', 'true');
+    icono.textContent = '✅';
+    card.appendChild(icono);
+
+    var titulo = document.createElement('h2');
+    titulo.className = 'cierre-card-title';
+    titulo.textContent = 'Relevamiento enviado';
+    card.appendChild(titulo);
+
+    var texto = document.createElement('p');
+    texto.className = 'cierre-card-text';
+    texto.textContent = 'Gracias' + (enviado.nombre ? ', ' + enviado.nombre : '') +
+      '. Recibí tus respuestas del Cuestionario Diagnóstico. ' +
+      'Yamila las revisa y te contacta a la brevedad.';
+    card.appendChild(texto);
+
+    var acciones = document.createElement('div');
+    acciones.className = 'cierre-actions';
+
+    var whatsapp = document.createElement('a');
+    whatsapp.className = 'btn btn-primary';
+    whatsapp.href = enviado.mensaje
+      ? 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(enviado.mensaje)
+      : 'https://wa.me/' + WHATSAPP_NUMBER;
+    whatsapp.textContent = 'Escribir por WhatsApp \u2192';
+    acciones.appendChild(whatsapp);
+
+    var servicios = document.createElement('a');
+    servicios.className = 'btn btn-secondary';
+    servicios.href = 'servicios.html';
+    servicios.textContent = 'Ver servicios \u2192';
+    acciones.appendChild(servicios);
+
+    card.appendChild(acciones);
+
+    var nota = document.createElement('p');
+    nota.className = 'cierre-nota';
+    nota.appendChild(document.createTextNode('¿No se abrió WhatsApp? Escribime al '));
+
+    var tel = document.createElement('a');
+    tel.href = 'https://wa.me/549' + WHATSAPP_NUMBER;
+    tel.textContent = WHATSAPP_NUMBER;
+    nota.appendChild(tel);
+    nota.appendChild(document.createTextNode('.'));
+    card.appendChild(nota);
+
+    var repetir = document.createElement('button');
+    repetir.className = 'cierre-repetir';
+    repetir.type = 'button';
+    repetir.textContent = 'Hacer el cuestionario de nuevo';
+    repetir.addEventListener('click', function () {
+      limpiarEnviado();
+      window.location.reload();
+    });
+    card.appendChild(repetir);
+
+    layout.parentNode.insertBefore(card, stepper || layout);
+    return true;
+  }
+
+  /* -------------------------------------------------------
      Arranque: restaurar borrador y pintar el estado inicial
      ------------------------------------------------------- */
 
   restoreDraft();
   goToStep(1, false);
+
+  // Si ya envió antes (volvió de WhatsApp o reingresó a la
+  // página), mostramos la tarjeta de cierre en vez del wizard.
+  mostrarCierre();
+
+  window.addEventListener('pageshow', function () {
+    mostrarCierre();
+  });
 });

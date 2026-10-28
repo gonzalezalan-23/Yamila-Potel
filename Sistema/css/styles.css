@@ -2480,6 +2480,7 @@ button {
   border-radius: 16px;
   padding: 2.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  scroll-margin-top: 96px; /* deja visible el formulario bajo el header sticky */
 }
 
 .form-field {
@@ -2551,6 +2552,164 @@ button {
   font-size: 1rem;
   font-weight: 600;
   margin-top: 0.5rem;
+}
+
+/* Campos dinámicos según el servicio elegido (js/contacto.js) */
+.servicio-campos-intro {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--gris-calido);
+  background-color: #F8F1EC;
+  border: 1px solid #EFEAE4;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin: 0 0 1.25rem;
+}
+
+.servicio-campos .form-fieldset {
+  margin-bottom: 1.25rem;
+}
+
+/* Sugerencia opcional del Cuestionario Diagnóstico (js/contacto.js) */
+.contacto-promo {
+  background-color: #F8F1EC;
+  border: 1px solid #EFEAE4;
+  border-left: 3px solid #8F1624;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin: 0 0 1.25rem;
+}
+
+.contacto-promo-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #171717;
+  margin: 0 0 0.3rem;
+}
+
+.contacto-promo-text {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #524C48;
+  margin: 0 0 1rem;
+}
+
+.contacto-promo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.contacto-promo-actions .btn {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.contacto-promo-nota {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--gris-calido);
+  margin: 0 0 1.25rem;
+}
+
+.contacto-promo-nota a {
+  color: #8F1624;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Tarjeta de cierre compartida: diagnóstico y contacto (plan 4.1) */
+.cierre-card {
+  background-color: #ffffff;
+  border: 1px solid #EFEAE4;
+  border-left: 3px solid #8F1624;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  text-align: center;
+}
+
+.cierre-icono {
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+
+.cierre-card-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.75rem;
+  color: #171717;
+  margin: 0 0 0.5rem;
+}
+
+.cierre-card-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #524C48;
+  max-width: 540px;
+  margin: 0 auto 1.5rem;
+}
+
+.cierre-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+}
+
+.cierre-nota {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--gris-calido);
+  margin: 0 0 1.1rem;
+}
+
+.cierre-nota a {
+  color: #8F1624;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cierre-repetir {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--gris-calido);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.cierre-repetir:hover,
+.cierre-repetir:focus-visible {
+  color: #8F1624;
+}
+
+/* Colocación en cada página */
+#diagnostico-cierre {
+  max-width: var(--container-ancho);
+  margin: 2rem auto 3rem;
+  padding: 2.5rem 5%;
+}
+
+#contacto-cierre {
+  margin: 0;
+}
+
+/* [hidden] debe ganarle al display:grid / flex de estos contenedores */
+.stepper-container[hidden],
+.diagnostico-layout[hidden],
+.contacto-form-card[hidden] {
+  display: none;
 }
 
 /* Sidebar: canales directos */
@@ -2708,6 +2867,7 @@ button {
   padding: 2.5rem;
   margin-bottom: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  scroll-margin-top: 96px; /* deja visible la tarjeta bajo el header sticky */
 }
 
 .servicio-row-head {

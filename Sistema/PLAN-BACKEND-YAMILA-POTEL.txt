@@ -1,0 +1,515 @@
+==============================================================
+ PLAN GENERAL — BACKEND Y SERVICIOS
+ Proyecto: Yamila Potel | Asesoría Contable, Impositiva,
+           Económica y Financiera
+ Última actualización: 28/10/2026
+==============================================================
+
+Sumario ejecutivo
+-----------------
+La web hoy es 100% estática (HTML + CSS + JS vanilla, sin build).
+El objetivo es sumar backend sin inventar infraestructura propia:
+
+  - GOOGLE APPS SCRIPT  -> backend/API (recibe los formularios)
+  - GOOGLE SHEETS       -> base de datos y registro de la clienta
+  - GMAIL (cuenta nueva)-> respaldo / notificación de cada consulta
+  - FIREBASE AUTH       -> login del panel admin (UNA sola cuenta,
+                           sin registros abiertos)
+  - HTML ADMIN          -> dashboard privado para Yamila
+  - WHATSAPP (wa.me)    -> canal inmediato de contacto (ya en uso)
+
+TODO queda ligado a UNA SOLA cuenta de Google creada para el
+proyecto (web, Drive, Sheets, Apps Script, Gmail, Firebase).
+
+
+==============================================================
+ 1. ESTADO ACTUAL DEL PROYECTO (antes de arrancar backend)
+==============================================================
+
+Páginas: index.html, servicios.html, diagnostico.html,
+sobre-mi.html, contacto.html, politica-de-privacidad.html
+Carpeta: Yamila-Potel/Sistema/
+JS: app.js (header/menú), main.js (animaciones fade-in),
+    diagnostico.js (wizard de 6 pasos), contacto.js (campos
+    dinámicos según servicio)
+
+Lo que ya funciona:
+ [x] Wizard de diagnóstico completo (6 pasos, validación por paso,
+     resumen, persistencia del borrador en localStorage).
+     HOY solo arma un mensaje y abre WhatsApp (wa.me). NO guarda nada.
+ [x] Servicios -> Contacto: los 4 botones "Consultar por este
+     servicio" llegan a contacto.html?servicio=... con el select
+     pre-marcado y el formulario alargado con campos extra
+     OPCIONALES según el servicio (impositiva / costos / flujo /
+     importaciones). El mensaje final siempre queda al final y es
+     el único campo obligatorio.
+ [x] Select de contacto: 4 servicios + "Diagnóstico inicial" +
+     "Otras consultas".
+ [x] Si se elige "Diagnóstico inicial" aparece una tarjeta OPCIONAL
+     que invita al cuestionario, con botón de aceptar y de RECHAZAR
+     (al rechazar se oculta y la persona sigue con el form de
+     contacto normal).
+ [x] Home: las 4 cards de servicios anclan a su sección exacta
+     (servicios.html#servicio-01 ... 04).
+
+Lo que NO existe todavía (es nuestro trabajo):
+ [ ] El formulario de contacto NO envía nada (action vacío).
+ [ ] El diagnóstico no persiste en ningún lado.
+ [ ] No hay backend, ni base de datos, ni panel.
+
+
+==============================================================
+ 2. ARQUITECTURA OBJETIVO
+==============================================================
+
+                    +----------------------+
+   Visitante ------>|  WEB ESTÁTICA       |  (HTML/CSS/JS)
+                    |  Hosting a definir   |
+                    +----------+-----------+
+                               |
+             POST JSON (fetch) |  ?tipo=contacto | diagnostico
+                               v
+                    +----------------------+
+                    |  GOOGLE APPS SCRIPT  |  <-- backend/API
+                    |  (Web App desplegada)|
+                    +--+--------+--------+-+
+                       |        |        |
+                       v        v        v
+                  SHEETS     GMAIL     (verifica tokens
+               (registro)  (respaldo)   para el admin)
+
+   Panel de Yamila (admin.html, en la misma web):
+     Yamila ingresa con su cuenta de Firebase Auth (única cuenta
+     creada a mano, sin registro público) -> el front obtiene un
+     ID token -> se lo manda a Apps Script -> Apps Script lo
+     VERIFICA contra Firebase -> devuelve los datos -> dashboard.
+
+Principios del diseño:
+ - UN solo backend: Apps Script. No levantar servidor Node
+   duplicado que termine siendo una segunda fuente de verdad.
+ - UNA sola cuenta Google para todo (ya creada).
+ - El hosting puede ser cualquier estático (GitHub Pages,
+   Netlify, Vercel, Cloudflare Pages, o un VPS): el "backend"
+   vive en Google. Si más adelante se quiere VPS con backend
+   propio, la migración es cambiar el endpoint del fetch.
+ - Nada de credenciales SMTP ni secretos reales en el frontend:
+   todo lo sensible vive del lado de Apps Script.
+
+
+==============================================================
+ 3. QUÉ HACE CADA PIEZA
+==============================================================
+
+3.1 GOOGLE APPS SCRIPT (el backend)
+--------------------------------------------------------------------
+Proyecto en script.google.com vinculado a la hoja de cálculo
+"YP - Base de datos" (nombre a definir), desplegado como Web App.
+
+Endpoints:
+  doPost(e)  -> recibe JSON con { tipo: "contacto" | "diagnostico", ... }
+                - valida forma del payload (campos obligatorios,
+                  longitudes máximas, tipo de dato)
+                - honeypot anti-spam (ver Fase 6)
+                - agrega fila en la hoja correspondiente
+                - le manda un email a Yamila (GmailApp, desde la
+                  MISMA cuenta Gmail del proyecto)
+                - responde { ok: true }
+  doGet(e)   -> solo para el panel admin: exige header
+                Authorization: Bearer <ID token de Firebase>,
+                lo verifica contra Firebase (identitytoolkit
+                accounts:lookup con la API key del proyecto) y
+                devuelve los datos pedidos (resumen, lista,
+                detalle). Nunca devuelve todo si no hay token
+                válido.
+
+Pasos de creación (checklist):
+  [ ] Crear la hoja de cálculo en la cuenta nueva
+  [ ] Extensiones -> Apps Script, vinculado a esa hoja
+  [ ] Código: doPost + doGet + helpers (una función por tipo)
+  [ ] Implementar como app web:
+        - Ejecutar como: Yo
+        - Quién tiene acceso: Cualquier persona con el enlace
+      (el acceso "abierto" se compensa con validación de payload
+       y con verificación de token en doGet; ver 7. Riesgos)
+  [ ] Copiar la URL /exec  -> es el endpoint de la web
+  [ ] Importante: cada cambio de código requiere volver a
+      implementar (nueva versión) o usar un deploy de prueba
+
+3.2 GOOGLE SHEETS (la base de datos / el "Google Docs" que pidió
+    la clienta)
+--------------------------------------------------------------------
+Una hoja con dos pestañas. Ella la ve y la usa como registro.
+No hace falta más base de datos por ahora.
+
+  Pestaña "Consultas" (formulario de contacto):
+    fecha | origen | servicio | nombre | email | telefono |
+    campos_extra | mensaje | estado
+
+    - fecha: ISO 2026-10-28T14:32:00 (fácil de ordenar/filtrar)
+    - origen: "boton_servicios" | "home" | "directo"
+    - servicio: clave corta (impositiva, costos, flujo,
+      importaciones, diagnostico-inicial, otras-consultas)
+    - campos_extra: los campos opcionales dinámicos concatenados
+      como "situacion_fiscal: Monotributo | detalle_impositivo: ..."
+      (alternativa si prefiere: una columna por campo; hay ~14
+      campos distintos entre los 4 servicios)
+    - estado: columna vacía con validación de datos (dropdown)
+      para que Yamila marque: pendiente / contactado / propuesta
+      enviada / cerrada
+
+  Pestaña "Diagnosticos" (cuestionario de 6 pasos):
+    fecha | estado | nombre | negocio | rubro | antiguedad |
+    tipo_gestion | registro_movimientos | frecuencia_revision |
+    sistema_registro | medios_cobro | pct_facturacion |
+    nivel_facturacion | cuenta_bancaria | cuenta_exclusiva |
+    retiros_personales | punto_equilibrio | fondo_reserva |
+    control_costos | desafio_principal | comentarios
+
+    (las columnas salen de FIELD_LABELS en diagnostico.js, ya
+     mapeadas 1:1)
+
+3.3 GMAIL (cuenta nueva del proyecto) — respaldo
+--------------------------------------------------------------------
+Apps Script envía el mail con GmailApp desde la propia cuenta.
+Cada consulta genera:
+  Asunto: [Web Yamila Potel] Nueva consulta - Asesoría impositiva
+  Cuerpo: los mismos datos de la fila de la planilla
+  -> si un día la planilla falla o se borra, el respaldo está
+     en el inbox con etiqueta automática ([Web Yamila Potel])
+
+Decisiones:
+  - El mail es NOTIFICACIÓN + respaldo; el registro canónico es
+    la planilla.
+  - Cuota de Apps Script: ~100 emails/día en cuentas gratuitas
+    (suficiente de sobra para el volumen de una consultora).
+
+3.4 FIREBASE AUTH (acceso al panel)
+--------------------------------------------------------------------
+  [ ] Consola Firebase -> crear proyecto (ej: yamila-potel-web)
+  [ ] Authentication -> habilitar SOLO "Email/contraseña"
+  [ ] Crear UNA cuenta de usuario a mano desde la consola
+      (la de Yamila). NO hay botón de registro en ningún lado.
+  [ ] Authentication -> Settings -> Authorized domains:
+      agregar solo el dominio final de la web (y localhost para
+      desarrollo). Esto limita desde dónde se puede iniciar
+      sesión.
+  [ ] Copiar la config web (firebaseConfig) -> es pública por
+      diseño; la seguridad NO depende de ocultarla, sino de que
+      no existan otras cuentas + de que Apps Script verifique el
+      token.
+
+3.5 ADMIN.HTML (dashboard privado)
+--------------------------------------------------------------------
+Página en la misma web, sin link en el menú ni en el footer
+(solo se llega escribiendo la URL).
+
+  Login: email + contraseña de la cuenta única de Firebase.
+  Una vez adentro:
+    - Resumen: consultas de los últimos 30 días, por servicio,
+      diagnósticos nuevos, pendientes.
+    - Tabla de consultas con filtro por fecha/servicio/estado.
+    - Tabla de diagnósticos con detalle expandible.
+    - Cambiar estado (pendiente -> contactado ...) que escribe
+      de vuelta en la planilla (doPost con token).
+    - Exportar CSV.
+  Técnicamente: firebase.auth().signInWithEmailAndPassword()
+  -> user.getIdToken() -> fetch a doGet/doPost de Apps Script
+  con el token en el header -> Apps Script verifica -> datos.
+
+  NO se usa Firestore por ahora: la fuente de verdad es la
+  planilla. Si algún día el dashboard necesita consultas
+  complejas o tiempo real, se puede espejar la hoja a Firestore
+  sin tocar el frontend del admin.
+
+
+==============================================================
+ 4. FLUJOS DE DATOS (qué pasa en cada acción del usuario)
+==============================================================
+
+FLUJO A — Consulta desde el formulario de contacto
+  DECIDIDO: el mensaje COMPLETO de la consulta va a WhatsApp
+  (automático) y queda el respaldo en Gmail vía G.A.S.
+
+  1. Visitante llega desde servicios.html?servicio=X o desde el
+     home (anclado) y completa el form (campos extra opcionales).
+  2. Submit -> fetch POST a Apps Script { tipo: "contacto", ... }
+     -> fila en pestaña "Consultas" + email de respaldo a Yamila
+        (asunto: [Web Yamila Potel] Nueva consulta - <servicio>).
+  3. Con la respuesta OK del servidor -> se abre WhatsApp (wa.me)
+     con el mensaje prolijo (ver 4.1) y se muestra la tarjeta de
+     cierre en el lugar del formulario.
+  4. Al volver de WhatsApp (o si no se abrió), la tarjeta de
+     cierre queda visible.
+  5. INTERIM (estado actual, sin G.A.S): el submit abre WhatsApp
+     con ese mismo mensaje y muestra la tarjeta; el respaldo en
+     Gmail se suma en la Fase 2. El código queda marcado como
+     "interim" para no olvidarlo.
+  6. Si falla el fetch: mensaje de error + botón de WhatsApp
+     como salida alternativa.
+
+FLUJO B — Cuestionario diagnóstico
+  DECIDIDO: el diagnóstico se centra en la planilla de Drive
+  (ahí está el registro); el WhatsApp es solo una NOTIFICACIÓN
+  corta. La redirección es automática y al volver queda la
+  tarjeta de cierre.
+
+  1. Usuario completa los 6 pasos (ya funciona).
+  2. Al final: fetch POST { tipo: "diagnostico", ... } -> fila
+     en la pestaña "Diagnosticos" (destino principal: el Drive)
+     y, con la respuesta OK, se abre WhatsApp con el mensaje
+     corto de notificación (ver 4.1).
+  3. Vuelta desde WhatsApp -> tarjeta de cierre que reemplaza al
+     wizard: "Relevamiento enviado", botón para escribir/
+     reenviar, link a servicios y opción de hacerlo de nuevo.
+  4. Persistencia: localStorage guarda que ya envió (con fecha);
+     si la persona vuelve a entrar al diagnóstico, ve la tarjeta
+     en vez del paso 6, con botón "Hacer el cuestionario de nuevo".
+  5. El borrador de respuestas se limpia SOLO si el envío fue OK
+     (hoy se limpia siempre; corregir en la Fase 3).
+
+  INTERIM (estado actual, sin G.A.S): no se puede afirmar que
+  "la planilla se actualizó" porque todavía no se guarda nada.
+  Por eso diagnostico.js lleva una flag MODO_NOTIFICACION:
+    - false (hoy): manda el detalle COMPLETO de las respuestas,
+      con el formato prolijo de la sección 4.1.
+    - true (cuando entre G.A.S): manda solo la notificación
+      corta con el link a la planilla.
+
+FLUJO C — Yamila entra al panel
+  1. Escribe /admin.html -> login con su cuenta Firebase.
+  2. Token -> Apps Script verifica -> listado y resúmenes.
+  3. Marca una consulta como "contactada" -> Apps Script
+     actualiza la celda de estado en la planilla.
+
+FLUJO D — Canal directo (ya funciona, se mantiene)
+  WhatsApp wa.me/5491139053672 con mensaje pre-armado.
+  Sirve como salida de emergencia si el backend está caído.
+
+
+==============================================================
+ 4.1 FORMATOS DE MENSAJES (definido el 28/10/2026)
+==============================================================
+Los textos se editan acá directamente; el código los respeta.
+
+A) DIAGNOSTICO -> WHATSAPP, MODO NOTIFICACION (G.A.S conectado)
+   (flag MODO_NOTIFICACION = true)
+
+   :bell: *Nueva consulta desde tu web*
+   La planilla de clientes se actualizo con un nuevo
+   *Diagnostico Inicial*.
+
+   :bust_in_silhouette: *Matias* - Estudio Creativa
+   Rubro: Diseno grafico - Antiguedad: +3 anos
+   :warning: Desafio principal: "No se cuanto gano al mes"
+
+   :clipboard: Planilla:  <link corto a la hoja>
+
+   _28/10/2026 14:32_
+
+   Reglas: maximo 6-7 lineas, SIEMPRE con el link a la fila o
+   a la hoja, y solo los datos destacados (nombre, negocio,
+   rubro, desafio). El detalle completo vive en la planilla.
+
+B) DIAGNOSTICO -> WHATSAPP, INTERIM (MODO_NOTIFICACION = false,
+   hoy): mismo detalle que antes pero agrupado por secciones,
+   omitiendo campos vacios y con labels cortos.
+
+   :small_orange_diamond: *Diagnostico Inicial - Matias (Estudio Creativa)*
+
+   *Datos*
+   - Rubro: Diseno grafico - +3 anos
+   - Gestion: Monotributista
+
+   *Organizacion*
+   - Registro: diario - Revision: semanal (Excel)
+   - Cobros: efectivo, Mercado Pago - Factura <50%
+
+   *Dinero*
+   - Cuenta bancaria: si, compartida - Retiros: puntuales
+   - Punto de equilibrio: no - Fondo de reserva: no
+
+   :warning: *Desafio principal*
+   "No se cuanto gano al mes"
+
+   :speech_balloon: *Comentarios*
+   "..."
+
+C) CONTACTO -> WHATSAPP, mensaje completo (y mismo cuerpo para
+   el email de respaldo de Gmail):
+
+   :small_orange_diamond: *Nueva consulta - Analisis de costos y rentabilidad*
+
+   *Matias* - 11 3905-3672
+   matias@correo.com
+
+   *Del formulario*
+   - Producto: servicios de catering
+   - Precios: a ojo, comparandome con el mercado
+   - Punto de equilibrio: no
+
+   :speech_balloon: *Mensaje*
+   "Quiero saber cuanto vender para no fundirme."
+
+   _Enviado desde la web - 28/10 14:32_
+
+   Para el email de respaldo: asunto
+   "[Web Yamila Potel] Nueva consulta - <servicio>" y el mismo
+   cuerpo (en HTML plano) + la fila de la planilla.
+
+   Reglas comunes (A, B, C):
+   - Encabezado con el nombre del asunto en negrita.
+   - *negrita* y _cursiva_ si WhatsApp los soporta; nada de
+     markdown de enlaces (WhatsApp solo detecta URLs sueltas).
+   - Campos vacios o sin dato: NO se incluyen.
+   - El texto libre del usuario (mensaje / desafio /
+     comentarios) va citado con "..." y al final.
+   - Siempre un pie discreto con fecha; en el interim, aviso
+     de que viene del sitio.
+
+TARJETAS DE CIERRE (frontend, sin backend)
+
+   Diagnostico (al volver de WhatsApp o al reingresar):
+     :check_mark: *Relevamiento enviado*
+     Gracias, Matias. Recibi tus respuestas del Cuestionario
+     Diagnostico. Yamila las revisa y te contacta a la brevedad.
+
+     [Escribir por WhatsApp ->]  [Ver servicios ->]
+     No se abrio WhatsApp? Escribi al 11 3905-3672.
+     [Hacer el cuestionario de nuevo] (limpia el flag)
+
+   Contacto (al enviar):
+     :check_mark: *Consulta enviada*
+     Gracias por escribir. Tu consulta por "<servicio>" llego
+     bien: Yamila te contacta a la brevedad.
+
+     [Tambien por WhatsApp ->]  [Ver servicios ->]
+
+
+==============================================================
+ 5. FASES DE TRABAJO (orden propuesto)
+==============================================================
+
+FASE 0 — Cuenta y estructura Google            [hecho / pendiente menor]
+  [x] Cuenta Gmail nueva creada para el proyecto
+  [ ] Nombrar/crear la hoja "YP - Base de datos" con las 2
+      pestañas y sus encabezados (usar fila 1 con formato,
+      filtros y la validación de dropdown de "estado")
+
+FASE 1 — Backend Apps Script
+  [ ] Código doPost (contacto + diagnostico) con validación
+  [ ] Escritura en ambas pestañas
+  [ ] Email con GmailApp + etiqueta automática
+  [ ] Deploy Web App + URL /exec
+  [ ] Probar con un JSON de prueba (Apps Script tiene ejecución
+      de prueba o un POST con curl/PowerShell)
+
+FASE 2 — Conectar el formulario de contacto
+  [x] HECHO 28/10: mensaje 4.1-C + tarjeta de cierre +
+      auto-redirect a WhatsApp (INTERIM, marcar en codigo)
+  [ ] contacto.js: fetch a Apps Script en el submit, con estados
+      (enviando / enviado / error); recien con OK -> wa.me
+      (asi no se cancela el pedido)
+  [ ] Email de respaldo desde Apps Script (mismo cuerpo)
+  [ ] Borrar la marca "interim" del codigo
+
+FASE 3 — Conectar el diagnostico
+  [x] HECHO 28/10: tarjeta de cierre + persistencia en
+      localStorage + auto-redirect (texto en 4.1)
+  [ ] diagnostico.js: POST a Apps Script y pasar
+      MODO_NOTIFICACION = true (notificacion corta, ver 4.1-A)
+  [ ] Limpiar el borrador solo si el envio salio bien
+
+FASE 4 — Firebase Auth + admin.html
+  [ ] Proyecto Firebase, provider email/password, cuenta única
+  [ ] Authorized domains restringido
+  [ ] admin.html con login (sin link en la web)
+  [ ] doGet/doPost con verificación de ID token
+
+FASE 5 — Dashboard
+  [ ] Resumen (KPIs simples: consultas por servicio, últimos
+      30 días, diagnósticos nuevos)
+  [ ] Tablas con filtros + cambio de estado
+  [ ] Exportar CSV
+  [ ] (opcional) Looker Studio conectado a la misma hoja como
+      reporte gráfico extra, sin tocar código
+
+FASE 6 — Endurecimiento y legal
+  [ ] Honeypot + validación de payload en Apps Script
+  [ ] Registro básico de errores (una pestaña "Logs")
+  [ ] Checkbox de consentimiento en el formulario de contacto
+      (Ley 25.326 de protección de datos personales)
+  [ ] Actualizar politica-de-privacidad.html (qué datos se
+      guardan, dónde y para qué)
+  [ ] Revisar límites de cuota de Apps Script
+
+
+==============================================================
+ 6. DECISIONES YA TOMADAS
+==============================================================
+ - Backend = Apps Script (no servidor propio duplicado).
+ - Registro canónico = Google Sheets (la clienta lo usa como
+   "tabla de clientes"); Gmail es respaldo.
+ - Panel admin = Firebase Auth con UNA cuenta precargada;
+   cero registro público de usuarios.
+ - La web puede hospedarse en cualquier lado (el backend vive
+   en Google); si se usa VPS, solo cambia el host de los archivos.
+ - Los formularios NO mandan todavía: primero se construye el
+   backend (Fase 1) y recién después se conectan (Fases 2 y 3).
+ - El WhatsApp queda siempre como canal de respaldo inmediato.
+
+
+==============================================================
+ 7. NOTAS TÉCNICAS Y RIESGOS (ojo con esto)
+==============================================================
+ - CORS: para no tropezar con el preflight, el fetch del front
+   se hace con Content-Type: text/plain y el JSON en el body;
+   Apps Script lo recibe igual (e.postData.contents).
+ - El deploy de Apps Script NO toma cambios hasta volver a
+   implementar (o usar un deploy de prueba durante desarrollo).
+ - El endpoint /exec es "público" por cómo funciona Apps Script:
+   la protección es validar el payload + honeypot + que doGet
+   exija token. No es una API con usuarios reales.
+ - NUNCA poner credenciales de Gmail/SMTP en el JS del front.
+   Delegar todo el envío a Apps Script (que corre con los
+   permisos de la cuenta).
+ - wa.me redirige la página: si se abre en el mismo submit,
+   hacerlo DESPUÉS de que el fetch responda OK.
+ - Firebase config (apiKey, etc.) es pública por diseño: no es
+   un secreto. La seguridad está en las cuentas existentes +
+   Authorized domains + verificación de token del lado servidor.
+ - localStorage del diagnóstico: no limpiarlo si el envío falla
+   (hoy se limpia siempre; corregir en Fase 3).
+ - Datos personales: al empezar a guardar, sumar consentimiento
+   y actualizar la política de privacidad.
+
+
+==============================================================
+ 8. PENDIENTES / DECISIONES ABIERTAS
+==============================================================
+ [ ] Hosting definitivo (cualquier estático sirve; si se quiere
+     VPS por comodidad, adelante pero sin duplicar backend).
+ [x] DECIDIDO: diagnostico -> auto-redirect a WhatsApp +
+     tarjeta de cierre al volver (en vez del paso 6).
+ [x] DECIDIDO: contacto -> mismo criterio (auto-redirect +
+     tarjeta de cierre).
+ [x] APROBADOS 28/10: los textos de la seccion 4.1.
+ [ ] Asunto y texto de los emails de notificacion (probar con
+     la clienta).
+ [ ] Nombre final de la hoja y de las pestanas.
+ [ ] Si se quiere Looker Studio ademas del admin propio.
+
+
+==============================================================
+ 9. PRÓXIMOS PASOS CONCRETOS (cuando digas que arrancamos)
+==============================================================
+ 1. Definís (vos) el nombre de la hoja y las pestañas.
+ 2. Armamos juntos el código de Apps Script: doPost + doPost +
+    escritura en hoja + email (Fase 1). Lo probamos con un POST
+    de prueba antes de tocar la web.
+ 3. Con la URL /exec en mano, conectamos el formulario de
+    contacto (Fase 2) y después el diagnóstico (Fase 3).
+ 4. Recién ahí Firebase + admin (Fases 4 y 5).
+
+==============================================================
+ FIN DEL DOCUMENTO — actualizar fecha al avanzar fases.
+==============================================================
